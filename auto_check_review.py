@@ -1,9 +1,11 @@
-import time
 import logging
+import time
+
 import requests
 from decouple import config
 
 logger = logging.getLogger("ReviewBotLogger")
+
 
 class TgLogsHandler(logging.Handler):
 
@@ -14,7 +16,8 @@ class TgLogsHandler(logging.Handler):
 
     def emit(self, record):
         log_entry = self.format(record)
-        notify_to_tg(self.tg_bot_token, self.tg_chat_id, log_entry)
+        notify_to_tg(self.tg_chat_id, self.tg_bot_token, log_entry)
+
 
 def notify_to_tg(tg_channel_id, tg_bot_token, text):
     url = f"https://api.telegram.org/bot{tg_bot_token}/sendMessage"
@@ -35,9 +38,9 @@ def main():
     handler = TgLogsHandler(tg_bot_token, tg_user_id)
     logging.getLogger().setLevel(logging.INFO)
     handler.setLevel(logging.INFO)
-    handler.setFormatter(logging.Formatter('%(levelname)s %(name)s\n%(message)s'))
+    handler.setFormatter(logging.Formatter("%(levelname)s %(name)s\n%(message)s"))
     logging.getLogger().addHandler(handler)
-    logger.info('Пошло дело')
+    logger.info("Пошло дело")
 
     timestamp = None
 
@@ -54,6 +57,10 @@ def main():
         except requests.exceptions.ReadTimeout:
             continue
         except requests.exceptions.ConnectionError:
+            time.sleep(10)
+            continue
+        except Exception:
+            logger.exception("Что-то пошло не так, проверь бота")
             time.sleep(10)
             continue
 
