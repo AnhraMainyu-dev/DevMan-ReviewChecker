@@ -9,7 +9,7 @@
 ```commandline
 DEVMAN_TOKEN=
 TG_BOT_TOKEN=
-TG_USER_ID
+TG_USER_ID=
 ```
 
 Python3 должен быть уже установлен. 
